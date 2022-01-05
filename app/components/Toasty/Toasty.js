@@ -21,14 +21,14 @@ export const ToastProvider = ({ children }) => {
 				}}
 			>
 				{children}
-				<MyToast />
+				<Toasty />
 			</ToastContext.Provider>
 		</>
 	);
 };
 
 // Hook with methods
-export const useToast = () => {
+export const useToasty = () => {
 	const { setToastStatus, toastStatus } = useContext(ToastContext);
 	const { setToastOptions } = useContext(ToastContext);
 
@@ -55,7 +55,7 @@ export const useToast = () => {
 const ToastContext = createContext(null);
 
 // View
-const MyToast = () => {
+const Toasty = () => {
 	const { toastStatus, setToastStatus, toastOptions } =
 		useContext(ToastContext);
 
@@ -78,4 +78,4 @@ const MyToast = () => {
 	);
 };
 
-export default MyToast;
+export default Toasty;

@@ -1,11 +1,11 @@
-import { ToastProvider } from './MyToast';
-import Header from './Header';
+import { ToastProvider } from './components/Toasty';
+import Content from './Content';
 
 export default function App() {
 	return (
 		<>
 			<ToastProvider>
-				<Header />
+				<Content />
 			</ToastProvider>
 		</>
 	);

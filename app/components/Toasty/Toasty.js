@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect, createContext } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Animated } from 'react-native';
 
 // Provider to wrap the content in order to make the methods available using React Context
 export const ToastProvider = ({ children }) => {
-	const [toastStatus, setToastStatus] = useState(false);
+	const [toastyStatus, setToastyStatus] = useState(false);
 	const [toastyOptions, setToastyOptions] = useState({
 		message: 'Toasty!',
 		delay: 1000,
@@ -12,31 +12,31 @@ export const ToastProvider = ({ children }) => {
 
 	return (
 		<>
-			<ToastContext.Provider
+			<ToastyContext.Provider
 				value={{
-					toastStatus,
-					setToastStatus,
+					toastyStatus,
+					setToastyStatus,
 					toastyOptions,
 					setToastyOptions,
 				}}
 			>
 				{children}
 				<Toasty />
-			</ToastContext.Provider>
+			</ToastyContext.Provider>
 		</>
 	);
 };
 
 // Hook with methods
 export const useToasty = () => {
-	const { setToastStatus, toastStatus } = useContext(ToastContext);
-	const { setToastyOptions } = useContext(ToastContext);
+	const { setToastyStatus, toastyStatus } = useContext(ToastyContext);
+	const { setToastyOptions } = useContext(ToastyContext);
 
 	// check if is already opened
-	if (!toastStatus) {
+	if (!toastyStatus) {
 		return {
 			openToast: ({ message = 'Toasty!', delay = 1000, type = 'SUCCESS' }) => {
-				setToastStatus(true);
+				setToastyStatus(true);
 				setToastyOptions({
 					message,
 					delay,
@@ -52,31 +52,35 @@ export const useToasty = () => {
 };
 
 // context wrapped
-const ToastContext = createContext(null);
+const ToastyContext = createContext(null);
 
 // View
 const Toasty = () => {
-	const { toastStatus, setToastStatus, toastyOptions } =
-		useContext(ToastContext);
+	const { toastyStatus, setToastyStatus, toastyOptions } =
+		useContext(ToastyContext);
+	const [toastStyleHeight, setToastStyleHeight] = useState(
+		new Animated.Value(33)
+	);
 
 	useEffect(() => {
-		if (toastStatus) {
+		if (toastyStatus) {
 			setTimeout(() => {
-				setToastStatus(false);
+				setToastyStatus(false);
 			}, toastyOptions.delay);
 		}
-	}, [toastStatus]);
+	}, [toastyStatus]);
 
 	return (
 		<View
 			style={[
+				{ height: 50 },
 				styles.toastyContainer,
 				toastyOptions.type === 'SUCCESS' && styles.toastyContainerSuccess,
 				toastyOptions.type === 'WARNING' && styles.toastyContainerWarning,
 				toastyOptions.type === 'CLEAN' && styles.toastyContainerClean,
 			]}
 		>
-			{toastStatus && (
+			{toastyStatus && (
 				<Text
 					style={styles.toastyText}
 					style={[

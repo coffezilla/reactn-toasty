@@ -58,22 +58,34 @@ const ToastyContext = createContext(null);
 const Toasty = () => {
 	const { toastyStatus, setToastyStatus, toastyOptions } =
 		useContext(ToastyContext);
-	const [toastStyleHeight, setToastStyleHeight] = useState(
-		new Animated.Value(33)
+	const [toastyStyleHeight, setToastyStyleHeight] = useState(
+		new Animated.Value(0)
 	);
 
 	useEffect(() => {
 		if (toastyStatus) {
+			Animated.timing(toastyStyleHeight, {
+				toValue: 33,
+				duration: 120,
+				useNativeDriver: false,
+			}).start();
+
 			setTimeout(() => {
+				Animated.timing(toastyStyleHeight, {
+					toValue: 0,
+					duration: 120,
+					useNativeDriver: false,
+				}).start();
+
 				setToastyStatus(false);
 			}, toastyOptions.delay);
 		}
 	}, [toastyStatus]);
 
 	return (
-		<View
+		<Animated.View
 			style={[
-				{ height: 50 },
+				{ height: toastyStyleHeight },
 				styles.toastyContainer,
 				toastyOptions.type === 'SUCCESS' && styles.toastyContainerSuccess,
 				toastyOptions.type === 'WARNING' && styles.toastyContainerWarning,
@@ -93,7 +105,7 @@ const Toasty = () => {
 					{toastyOptions.message}
 				</Text>
 			)}
-		</View>
+		</Animated.View>
 	);
 };
 
@@ -101,9 +113,7 @@ export default Toasty;
 
 const styles = StyleSheet.create({
 	toastyContainer: {
-		marginHorizontal: 17,
-		// paddingVertical: 5,
-		paddingHorizontal: 20,
+		justifyContent: 'center',
 	},
 	toastyText: {
 		textAlign: 'center',

@@ -8,12 +8,22 @@ const Content = () => {
 		<View style={{ marginTop: 30, alignItems: 'center' }}>
 			<Text>Open up App.js to start working on your app! </Text>
 			<Button
-				title='First toasty'
-				onPress={() => toasty.openToast({ message: 'First', delay: 1000 })}
+				title='success'
+				onPress={() =>
+					toasty.openToast({ message: 'SUCCESS', type: 'SUCCESS', delay: 1000 })
+				}
 			/>
 			<Button
-				title='Second toasty'
-				onPress={() => toasty.openToast({ message: 'Second', delay: 2000 })}
+				title='WARNING'
+				onPress={() =>
+					toasty.openToast({ message: 'WARNING', type: 'WARNING', delay: 2000 })
+				}
+			/>
+			<Button
+				title='clean'
+				onPress={() =>
+					toasty.openToast({ message: 'CLEAN', type: 'CLEAN', delay: 2000 })
+				}
 			/>
 		</View>
 	);

@@ -1,10 +1,10 @@
 import { useContext, useState, useEffect, createContext } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 
 // Provider to wrap the content in order to make the methods available using React Context
 export const ToastProvider = ({ children }) => {
 	const [toastStatus, setToastStatus] = useState(false);
-	const [toastOptions, setToastOptions] = useState({
+	const [toastyOptions, setToastyOptions] = useState({
 		message: 'Toasty!',
 		delay: 1000,
 		type: 'SUCCESS',
@@ -16,8 +16,8 @@ export const ToastProvider = ({ children }) => {
 				value={{
 					toastStatus,
 					setToastStatus,
-					toastOptions,
-					setToastOptions,
+					toastyOptions,
+					setToastyOptions,
 				}}
 			>
 				{children}
@@ -30,14 +30,14 @@ export const ToastProvider = ({ children }) => {
 // Hook with methods
 export const useToasty = () => {
 	const { setToastStatus, toastStatus } = useContext(ToastContext);
-	const { setToastOptions } = useContext(ToastContext);
+	const { setToastyOptions } = useContext(ToastContext);
 
 	// check if is already opened
 	if (!toastStatus) {
 		return {
 			openToast: ({ message = 'Toasty!', delay = 1000, type = 'SUCCESS' }) => {
 				setToastStatus(true);
-				setToastOptions({
+				setToastyOptions({
 					message,
 					delay,
 					type,
@@ -56,22 +56,37 @@ const ToastContext = createContext(null);
 
 // View
 const Toasty = () => {
-	const { toastStatus, setToastStatus, toastOptions } =
+	const { toastStatus, setToastStatus, toastyOptions } =
 		useContext(ToastContext);
 
 	useEffect(() => {
 		if (toastStatus) {
 			setTimeout(() => {
 				setToastStatus(false);
-			}, toastOptions.delay);
+			}, toastyOptions.delay);
 		}
 	}, [toastStatus]);
 
 	return (
-		<View>
+		<View
+			style={[
+				styles.toastyContainer,
+				toastyOptions.type === 'SUCCESS' && styles.toastyContainerSuccess,
+				toastyOptions.type === 'WARNING' && styles.toastyContainerWarning,
+				toastyOptions.type === 'CLEAN' && styles.toastyContainerClean,
+			]}
+		>
 			{toastStatus && (
-				<Text>
-					{toastOptions.type}- {toastOptions.message} - {toastStatus.toString()}
+				<Text
+					style={styles.toastyText}
+					style={[
+						styles.toastyText,
+						toastyOptions.type === 'SUCCESS' && styles.toastyTextSuccess,
+						toastyOptions.type === 'WARNING' && styles.toastyTextWarning,
+						toastyOptions.type === 'CLEAN' && styles.toastyTextClean,
+					]}
+				>
+					{toastyOptions.message}
 				</Text>
 			)}
 		</View>
@@ -79,3 +94,35 @@ const Toasty = () => {
 };
 
 export default Toasty;
+
+const styles = StyleSheet.create({
+	toastyContainer: {
+		marginHorizontal: 17,
+		// paddingVertical: 5,
+		paddingHorizontal: 20,
+	},
+	toastyText: {
+		textAlign: 'center',
+	},
+	//
+	toastyContainerClean: {
+		backgroundColor: 'whitesmoke',
+	},
+	toastyTextClean: {
+		color: '#2a2a2a',
+	},
+	//
+	toastyContainerSuccess: {
+		backgroundColor: '#62e796',
+	},
+	toastyTextSuccess: {
+		color: '#0c6c10',
+	},
+	//
+	toastyContainerWarning: {
+		backgroundColor: '#f40100',
+	},
+	toastyTextWarning: {
+		color: 'white',
+	},
+});
